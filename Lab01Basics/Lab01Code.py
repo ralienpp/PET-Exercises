@@ -37,6 +37,14 @@ def encrypt_message(K, message):
     plaintext = message.encode("utf8")
     
     ## YOUR CODE HERE
+    key_length = len(K)
+    iv = urandom(key_length)
+
+    aes = Cipher.aes_128_gcm()
+    encrypter = aes.enc(K, iv)
+    ciphertext = encrypter.update(plaintext)
+    encrypter.finalize()
+    tag = encrypter.get_tag(key_length)
 
     return (iv, ciphertext, tag)
 
@@ -46,6 +54,11 @@ def decrypt_message(K, iv, ciphertext, tag):
         In case the decryption fails, throw an exception.
     """
     ## YOUR CODE HERE
+    aes = Cipher.aes_128_gcm()
+    decrypter = aes.dec(K, iv)
+    plain = decrypter.update(ciphertext)
+    decrypter.set_tag(tag)
+    decrypter.finalize()
 
     return plain.encode("utf8")
 
